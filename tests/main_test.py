@@ -4,11 +4,20 @@ from appdirs import *
 from search_that_hash.__main__ import main
 import os.path
 
+
 def test_it_works():
 
     hashes = ["5d41402abc4b2a76b9719d911017c592"]
 
     x = api.return_as_json(hashes)
+
+    assert x is not None
+
+def test_api_popular():
+
+    hashes = ["5d41402abc4b2a76b9719d911017c592"]
+
+    x = api.return_as_json(hashes, popular=True)
 
     assert x is not None
 
@@ -21,6 +30,13 @@ def test_it_works_fast():
 
     assert x is not None
 
+def test_it_works_fast_popular():
+
+    hashes = ["5d41402abc4b2a76b9719d911017c592"]
+
+    x = api.return_as_fast_json(hashes, popular=True)
+
+    assert x is not None
 
 def test_password_in_md5():
 
@@ -54,6 +70,13 @@ def test_password_in_sha512():
     assert "password" in x
 
 
+def test_if_site_cli():
+    runner = CliRunner()
+    result = runner.invoke(main, ["-t", "5f4dcc3b5aa765d61d8327deb882cf99"])
+    assert result.exit_code == 0
+    assert "\nSite : STH DB\n" in result.output
+
+
 def test_cli_config_works():
     from search_that_hash import config_object
 
@@ -67,7 +90,7 @@ def test_cli_config_works():
 def test_one_print():
     from search_that_hash import printing
 
-    printing.Prettifier.one_print("Test", "Test")
+    printing.Prettifier.one_print("Test", "Test", "Test")
 
 
 def test_help_menu_shows_on_no_input():
@@ -150,6 +173,7 @@ def test_cli_fail_on_grep():  # Fixes #63 issue
         ["-t", "jadjsjhd9239uh80dahjdah8isdh90wq90hj0j9fj9023j0-12j-j-0fasj0a", "-g"],
     )
     assert result.exit_code == 0
+
 
 def test_config_is_there():
     appname = "Search-That-Hash"

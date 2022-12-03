@@ -30,9 +30,9 @@ def cli_config(kwargs):
     return config
 
 
-def api_config(hashes: str, sth_api: str = None):
+def api_config(hashes: str, sth_api: str = None, popular=False):
     config = default_config()
-    config["hashes"] = create_hash_config(hashes)
+    config["hashes"] = create_hash_config(hashes, popular)
     config["api"] = True
     if sth_api:
         config["api_keys"]["STH"] = sth_api
@@ -50,11 +50,10 @@ def default_config():
         "timeout": 1,
         "wordlist": None,
         "offline": False,
-        "hashes_dot_org":"test",
-        "sth_api":"rGFbPbSXMF5ldzid2eyA81i6aCa497Z25MNgi8sa",
-        "hashcat_exe_name":"hashcat",
-        "hashcat_folder":""
-    
+        "hashes_dot_org": "test",
+        "sth_api": "rGFbPbSXMF5ldzid2eyA81i6aCa497Z25MNgi8sa",
+        "hashcat_exe_name": "hashcat",
+        "hashcat_folder": "",
     }
 
     appname = "Search-That-Hash"
@@ -75,8 +74,8 @@ def default_config():
     return json_contents
 
 
-def create_hash_config(hashes):
+def create_hash_config(hashes, popular=False):
     # Gets the results from name-that-hash
     logging.debug("Called NTH to get hash types")
-    nth_result_types = json.loads(nth.api_return_hashes_as_json(hashes))
+    nth_result_types = json.loads(nth.api_return_hashes_as_json(hashes, {"popular_only": popular}))
     return nth_result_types
